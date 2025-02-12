@@ -1,0 +1,32 @@
+<div>
+  <dx-responsive-box singleColumnScreen="sm" [(screenByWidth)]="screen" width="50%">
+    <dxi-row [ratio]="1"></dxi-row>
+    <dxi-col [ratio]="1"screen="lg"></dxi-col>
+    <dxi-col [ratio]="1"screen="lg"></dxi-col>
+
+    <dxi-item>
+      <dxi-location [row]="0" [col]="0" screen="lg"></dxi-location>
+      <dxi-location  [row]="0" [col]="0"  screen="sm"></dxi-location>
+      <div *dxTemplate class=" item">
+        <div>Estado:</div>
+        <div >
+          <dx-select-box  displayExpr="nome" valueExpr="id" [dataSource]="dataEstados" [value]="estado"
+           [searchEnabled]="true" (onValueChanged)="recarregarCidades($event)" ></dx-select-box>
+        </div>
+      </div>
+    </dxi-item>
+
+    <dxi-item>
+      <dxi-location [row]="0" [col]="1" screen="lg"></dxi-location>
+      <dxi-location [row]="1" [col]="0" screen="sm"></dxi-location>
+      <div *dxTemplate class=" item">
+        <div>Cidade:</div>
+        <div>
+          <dx-select-box  displayExpr="nome" valueExpr="id" [searchEnabled]="true" [value]="cidade"
+           [dataSource]="dataCidade" (onValueChanged)="informarCidade($event)"></dx-select-box>
+        </div>
+      </div>
+    </dxi-item>
+  </dx-responsive-box>
+</div>
+
