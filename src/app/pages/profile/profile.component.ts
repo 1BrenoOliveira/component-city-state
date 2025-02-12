@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Estado } from '../../shared/components/cidade-estado/Estado';
 
 @Component({
   templateUrl: 'profile.component.html',
@@ -7,6 +8,16 @@ import { Component } from '@angular/core';
 })
 
 export class ProfileComponent {
+  estadoTeste = {
+    id: 31,
+    sigla: "MG",
+    nome: "Minas Gerais",
+  }
+  cidadeTeste = {
+    id: 3100203,
+    nome: "Abaeté",
+
+  }
   employee: any;
   colCountByScreen: object;
 
@@ -33,7 +44,7 @@ export class ProfileComponent {
   }
 
   setarCidadeEstado(evento){
-    alert(evento.cidade + " - "+ evento.estado);
+    alert(evento.cidade.id + " - "+ evento.estado.sigla);
   }
 
 

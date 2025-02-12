@@ -3,11 +3,12 @@ import { Component, EventEmitter, Input, NgModule, OnInit, Output } from '@angul
 import { DxBoxModule, DxResponsiveBoxModule, DxSelectBoxModule, DxTemplateModule, DxTextBoxModule } from 'devextreme-angular';
 import { CidadeEstadoService } from './cidade-estado.service';
 import { HttpClientModule } from '@angular/common/http';
-import { Estado } from './Estado';
 import { ArrayStore } from 'devextreme/common/data';
 import { DxSelectBoxTypes } from 'devextreme-angular/ui/select-box';
-import { Cidade } from './Cidade';
 import { FormsModule } from '@angular/forms';
+import { delay } from 'rxjs';
+import { Cidade } from './Cidade';
+import { Estado } from './Estado';
 
 
 @Component({
@@ -16,10 +17,12 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './style.scss'
 })
 export class CidadeEstadoComponent implements OnInit {
-    @Input() estado: number = 0 ;
-    @Input() cidade: number = 0 ;
+    @Input() setEstado;
+    @Input() setCidade;
     @Output() emissorCidadeEstado = new EventEmitter();
 
+    estado: number = 0 ;
+    cidade: number = 0 ;
     dataEstados: ArrayStore;
     dataCidade: ArrayStore;
 
@@ -29,7 +32,7 @@ export class CidadeEstadoComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregarEstados();
-    this.carregarCidades(this.estado);
+    this.carregarCidades();
   }
 
   screen(width) {
@@ -41,34 +44,62 @@ export class CidadeEstadoComponent implements OnInit {
       this.dataEstados = new ArrayStore({
         data: dados,
         key: 'id'
-      })
+      });
+      this.verificarTipoInputEstado(dados);
     })
   }
 
-  private carregarCidades(value: number) {
-    this.estado = value;
+  carregarCidades() {
     this.service.pesquisarCidades(this.estado).subscribe(dados=>{
       this.dataCidade = new ArrayStore({
         data: dados,
         key: 'id'
-      })
+      });
+      this.verificarTipoInputCidade(dados);
     })
   }
 
-  private retornarCidadeEstado(){
-    let nomeCidade, codUf ;
-    this.dataCidade.byKey(this.cidade).then((dados)=> nomeCidade = dados.nome);
-    this.dataEstados.byKey(this.estado).then((dados)=> codUf = dados.sigla);
-    this.emissorCidadeEstado.emit({ 'cidade': nomeCidade, 'estado': codUf});
+  retornarCidadeEstado(){
+    if(this.dataCidade){
+      this.emissorCidadeEstado.emit({
+          'cidade': this.retornaItemDeArrayStore(this.cidade, this.dataCidade),
+          'estado': this.retornaItemDeArrayStore(this.estado, this.dataEstados)
+        });
+    }
   }
 
-  recarregarCidades({ value }: DxSelectBoxTypes.ValueChangedEvent) {
-    this.carregarCidades(value);
+  private retornaItemDeArrayStore(key, arrayStore: ArrayStore){
+    let item;
+    arrayStore.byKey(key).then((dados)=> item = dados);
+    return item;
   }
 
-  informarCidade({ value }: DxSelectBoxTypes.ValueChangedEvent){
-    this.cidade = value;
-    this.retornarCidadeEstado();
+  private verificarTipoInputEstado(lista){
+    if(this.setEstado){
+      let tipo = typeof(this.setEstado);
+      if(tipo == 'number') this.estado = this.setEstado;
+      else if(tipo == 'string' || this.setEstado.length == 2 ) this.converterSiglaEmIdEstado(lista, this.setEstado);
+      else if(tipo=='object'){
+        if(this.setEstado.id) this.estado = this.setEstado?.id
+        else if(this.setEstado.sigla ) this.converterSiglaEmIdEstado(lista, this.setEstado.sigla);
+      }
+    }
+  }
+
+  private verificarTipoInputCidade(lista){
+    if(this.setCidade){
+      let tipo = typeof(this.setCidade);
+      if(tipo == 'number') this.cidade = this.setCidade;
+      else if(tipo=='object'){
+        if(this.setCidade.id) this.cidade = this.setCidade?.id
+      }
+    }
+  }
+
+  private converterSiglaEmIdEstado(lista, valor){
+    lista.forEach(item => {
+      (item.sigla == valor.toUpperCase()) ? this.estado = item.id : 0;
+    });
   }
 
 }

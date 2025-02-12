@@ -13,6 +13,6 @@
     labelLocation="top"
     [colCountByScreen]="colCountByScreen">
   </dx-form>
-    <app-cidade-estado [estado]="31" (emissorCidadeEstado)="setarCidadeEstado($event)"></app-cidade-estado>
+    <app-cidade-estado [setEstado]="'mg'" [setCidade]="cidadeTeste" (emissorCidadeEstado)="setarCidadeEstado($event)"></app-cidade-estado>
 </div>
 

@@ -10,8 +10,8 @@
       <div *dxTemplate class=" item">
         <div>Estado:</div>
         <div >
-          <dx-select-box  displayExpr="nome" valueExpr="id" [dataSource]="dataEstados" [value]="estado"
-           [searchEnabled]="true" (onValueChanged)="recarregarCidades($event)" ></dx-select-box>
+          <dx-select-box  displayExpr="nome" valueExpr="id" [dataSource]="dataEstados" [(ngModel)]="estado"
+           [searchEnabled]="true" (onValueChanged)="carregarCidades()" ></dx-select-box>
         </div>
       </div>
     </dxi-item>
@@ -22,8 +22,8 @@
       <div *dxTemplate class=" item">
         <div>Cidade:</div>
         <div>
-          <dx-select-box  displayExpr="nome" valueExpr="id" [searchEnabled]="true" [value]="cidade"
-           [dataSource]="dataCidade" (onValueChanged)="informarCidade($event)"></dx-select-box>
+          <dx-select-box  displayExpr="nome" valueExpr="id" [searchEnabled]="true" [(ngModel)]="cidade"
+           [dataSource]="dataCidade" (onValueChanged)="retornarCidadeEstado()"></dx-select-box>
         </div>
       </div>
     </dxi-item>
